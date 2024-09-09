@@ -1,36 +1,14 @@
 const email=document.getElementById('email');
 const dateofbirth=document.getElementById('dob');
-const submit =document.getElementById('submit');
-submit.addEventListener('click',(event)=>{
-  let isValid=true;
-  if(!(validEmail(email.value))){
-    alert("enter valid email address");
-    isValid=false;
-  }
-
-  if(!(validDateofbirth(dateofbirth.value))){
-    message="enter vaild date of birth"
-    dateofbirth.setCustomValidity(message);
-    dateofbirth.reportValidity();
-    isValid=false;
 
 
-  } else {
-    dateofbirth.setCustomValidity(""); 
-   }
 
 
-if (!isValid) {
-    event.preventDefault();
-}
+  
+
+  
   
  
-});
-
-function validEmail(email){
-  const validpattern=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
- return (validpattern.test(email));  
-}
 
 
 
@@ -39,36 +17,25 @@ function validEmail(email){
 
 
 
-function validDateofbirth(dateofbirth){
-   const todayDate =new Date();
-   const birthDate =new Date(dateofbirth);
-
-   const age=todayDate.getFullYear() - birthDate.getFullYear();
-
-   const monthDiff=todayDate.getMonth() - birthDate.getMonth();
-
-   const dateDiff=todayDate.getDate() - birthDate.getDate();
 
 
-   if(monthDiff<0 || (monthDiff ===0 && dateDiff<0)){
-    age--;
-   }
-   
-
-   return (age>=18 && age<=55);
-   
-   
-}
 
 
-let userForm = document.getElementById("user-form");
+
+
+const userForm = document.getElementById("user-form");
 
 
 let userData= JSON.parse(localStorage.getItem("user-data") ) || [];
 
 
 const displayEntries =()=>{
-  const userEntries=  JSON.parse(localStorage.getItem("user-data"));
+  const userEntries=  JSON.parse(localStorage.getItem("user-data")) || [];
+
+  if(!userEntries) return;
+
+  
+  
 
 
   let tableEntries = userEntries.map(data=>{
@@ -114,6 +81,28 @@ userForm.addEventListener('submit',(event) =>{
   const acceptTerms=document.getElementById('acceptTerms').checked;
 
 
+  
+  let isValid=true;
+  
+  if(!(validDateofbirth(dateofbirth.value))){
+    let message="enter vaild date of birth(between 18 and 55 years old).";
+    dateofbirth.setCustomValidity(message);
+    dateofbirth.reportValidity();
+    isValid=false;
+    return;
+
+
+  } else {
+    dateofbirth.setCustomValidity(""); 
+   }
+
+
+if (!isValid) {
+    event.preventDefault();
+}
+
+
+
   const entry ={
     name,
     email,
@@ -135,3 +124,30 @@ displayEntries();
 
 
 
+function validEmail(email){
+  const validpattern=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+ return (validpattern.test(email));  
+}
+
+function validDateofbirth(dateofbirth){
+  const todayDate =new Date();
+  const birthDate =new Date(dateofbirth);
+
+  if(isNaN(birthDate.getTime())) return false;
+
+  const age=todayDate.getFullYear() - birthDate.getFullYear();
+
+  const monthDiff=todayDate.getMonth() - birthDate.getMonth();
+
+  const dateDiff=todayDate.getDate() - birthDate.getDate();
+
+
+  if(monthDiff<0 || (monthDiff ===0 && dateDiff<0)){
+   age--;
+  }
+  
+
+  return (age>=18 && age<=55);
+  
+  
+}
